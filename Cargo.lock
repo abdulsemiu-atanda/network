@@ -859,6 +859,8 @@ dependencies = [
  "log",
  "redis",
  "reqwest",
+ "serde",
+ "serde_derive",
 ]
 
 [[package]]
