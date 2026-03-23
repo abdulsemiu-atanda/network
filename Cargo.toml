@@ -1,0 +1,10 @@
+[package]
+name = "network"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+diesel = { version = "2.3.7", features = ["extras", "postgres"] }
+log = "0.4.29"
+redis = "1.1.0"
+reqwest = { version = "0.13.2", features = ["json"] }
