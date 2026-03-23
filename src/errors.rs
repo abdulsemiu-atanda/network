@@ -1,6 +1,7 @@
 use redis::{ParsingError, RedisError};
 use std::fmt;
 
+/// Database-related failures.
 pub enum DatabaseError {
   Pool(diesel::r2d2::PoolError),
   Diesel(diesel::result::Error),
@@ -57,7 +58,7 @@ impl fmt::Display for DatabaseError {
   }
 }
 
-/// Redis Errors
+/// Redis-related failures.
 pub enum RedisClientError {
   Redis(RedisError),
   RedisParse(ParsingError),
@@ -95,6 +96,7 @@ impl fmt::Display for RedisClientError {
 
 #[non_exhaustive]
 #[derive(Debug)]
+/// Top-level crate error used across database, Redis, and HTTP modules.
 pub enum NetworkError {
   Database(DatabaseError),
   Redis(RedisClientError),

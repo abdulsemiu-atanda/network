@@ -3,12 +3,17 @@ use serde::Serialize;
 
 use super::errors::NetworkError;
 
+/// Minimal REST client wrapper built on top of `reqwest::Client`.
+///
+/// `base_url` and endpoint paths are normalized so callers can pass values with
+/// or without leading/trailing slashes.
 pub struct RestClient {
   pub base_url: String,
   pub client: Client,
 }
 
 impl RestClient {
+  /// Creates a new client with a configured user-agent string.
   pub fn new(base_url: String, user_agent: String) -> Self {
     Self {
       base_url,
@@ -60,6 +65,7 @@ impl RestClient {
     Ok(request.send().await?)
   }
 
+  /// Sends a `POST` request with a JSON payload.
   pub async fn post(
     &self,
     endpoint: &str,
@@ -71,6 +77,7 @@ impl RestClient {
       .await
   }
 
+  /// Sends a `PATCH` request with a JSON payload.
   pub async fn patch(
     &self,
     endpoint: &str,
@@ -82,6 +89,7 @@ impl RestClient {
       .await
   }
 
+  /// Sends a `PUT` request with a JSON payload.
   pub async fn put(
     &self,
     endpoint: &str,
@@ -93,6 +101,7 @@ impl RestClient {
       .await
   }
 
+  /// Sends a `GET` request.
   pub async fn get(&self, endpoint: &str, headers: Option<HeaderMap>) -> Result<Response, NetworkError> {
     self.send_request(Method::GET, endpoint, headers).await
   }
