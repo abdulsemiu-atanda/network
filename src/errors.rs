@@ -99,6 +99,7 @@ pub enum NetworkError {
   Database(DatabaseError),
   Redis(RedisClientError),
   Transport(reqwest::Error),
+  InvalidInput(&'static str),
 }
 
 impl From<DatabaseError> for NetworkError {
@@ -110,6 +111,12 @@ impl From<DatabaseError> for NetworkError {
 impl From<RedisClientError> for NetworkError {
   fn from(value: RedisClientError) -> Self {
     Self::Redis(value)
+  }
+}
+
+impl From<RedisError> for NetworkError {
+  fn from(value: RedisError) -> Self {
+    Self::Redis(RedisClientError::from(value))
   }
 }
 
