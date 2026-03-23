@@ -1,7 +1,13 @@
 [package]
 name = "network"
+authors = ["Abdulsemiu Atanda <semiu@live.com>"]
 version = "0.1.0"
 edition = "2024"
+rust-version = "1.88"
+
+[lib]
+name="network"
+path="src/lib.rs"
 
 [dependencies]
 diesel = { version = "2.3.7", features = ["extras", "postgres"] }
