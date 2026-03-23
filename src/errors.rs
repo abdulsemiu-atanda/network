@@ -108,6 +108,12 @@ impl From<DatabaseError> for NetworkError {
   }
 }
 
+impl From<diesel::r2d2::PoolError> for NetworkError {
+  fn from(value: diesel::r2d2::PoolError) -> Self {
+    Self::Database(DatabaseError::from(value))
+  }
+}
+
 impl From<RedisClientError> for NetworkError {
   fn from(value: RedisClientError) -> Self {
     Self::Redis(value)
