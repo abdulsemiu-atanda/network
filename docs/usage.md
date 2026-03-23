@@ -58,6 +58,8 @@ async fn call_api() -> Result<(), NetworkError> {
 
   let _list = client.get("/v1/items?limit=10", None).await?;
 
+  let _delete = client.delete("/v1/items/42", None).await?;
+
   Ok(())
 }
 ```

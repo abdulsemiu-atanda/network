@@ -8,7 +8,7 @@ This crate provides lightweight wrappers around common networking and data-acces
 
 - Postgres connection pool creation and connection checkout.
 - Redis key/value operations with namespacing and expiry support.
-- HTTP requests (GET, POST, PATCH, PUT) with optional headers and JSON payloads.
+- HTTP requests (GET, POST, PATCH, PUT, DELETE) with optional headers and JSON payloads.
 - A shared error model to unify failure handling across all modules.
 
 ## Installation

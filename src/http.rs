@@ -8,7 +8,9 @@ use super::errors::NetworkError;
 /// `base_url` and endpoint paths are normalized so callers can pass values with
 /// or without leading/trailing slashes.
 pub struct RestClient {
+  /// Base URL used for all outgoing requests.
   pub base_url: String,
+  /// Underlying `reqwest` client used to execute requests.
   pub client: Client,
 }
 
@@ -104,6 +106,11 @@ impl RestClient {
   /// Sends a `GET` request.
   pub async fn get(&self, endpoint: &str, headers: Option<HeaderMap>) -> Result<Response, NetworkError> {
     self.send_request(Method::GET, endpoint, headers).await
+  }
+
+  /// Sends a `DELETE` request.
+  pub async fn delete(&self, endpoint: &str, headers: Option<HeaderMap>) -> Result<Response, NetworkError> {
+    self.send_request(Method::DELETE, endpoint, headers).await
   }
 }
 
@@ -221,5 +228,59 @@ mod tests {
 
     assert_eq!(response.status(), 200);
     get_mock.assert();
+  }
+
+  #[tokio::test]
+  async fn get_sends_optional_headers() {
+    let server = MockServer::start();
+    let get_mock = server.mock(|when, then| {
+      when
+        .method(GET)
+        .path("/v1/items")
+        .header("x-api-key", "test-key");
+      then.status(200);
+    });
+
+    let mut headers = HeaderMap::new();
+    headers.insert(
+      HeaderName::from_static("x-api-key"),
+      HeaderValue::from_static("test-key"),
+    );
+
+    let client = RestClient::new(server.base_url(), "network-tests".to_string());
+    let response = client
+      .get("/v1/items", Some(headers))
+      .await
+      .expect("get request should succeed");
+
+    assert_eq!(response.status(), 200);
+    get_mock.assert();
+  }
+
+  #[tokio::test]
+  async fn delete_calls_delete_endpoint() {
+    let server = MockServer::start();
+    let delete_mock = server.mock(|when, then| {
+      when
+        .method(DELETE)
+        .path("/v1/items/3")
+        .header("x-request-id", "req-3");
+      then.status(204);
+    });
+
+    let mut headers = HeaderMap::new();
+    headers.insert(
+      HeaderName::from_static("x-request-id"),
+      HeaderValue::from_static("req-3"),
+    );
+
+    let client = RestClient::new(server.base_url(), "network-tests".to_string());
+    let response = client
+      .delete("v1/items/3", Some(headers))
+      .await
+      .expect("delete request should succeed");
+
+    assert_eq!(response.status(), 204);
+    delete_mock.assert();
   }
 }
