@@ -17,10 +17,18 @@ Add this crate to your Cargo dependencies:
 
 ```toml
 [dependencies]
-network = { path = "." }
+network = { path = ".", default-features = false, features = ["http"] }
 ```
 
 For a published version, replace the path dependency with the crate version.
+
+Available features:
+
+- `http`: enables the `http` module and transport error conversions.
+- `database`: enables the `database` module and Diesel-backed database errors.
+- `keystore`: enables the `redis` module and Redis-backed cache errors.
+
+The default feature set enables only `http`.
 
 ## Prerequisites
 
@@ -30,12 +38,19 @@ For a published version, replace the path dependency with the crate version.
 
 ## Module overview
 
-- `database`: Diesel `r2d2` pool helpers for Postgres connections.
-- `redis`: namespaced Redis get/set/delete operations.
-- `http`: async REST wrapper around `reqwest::Client`.
+- `database`: Diesel `r2d2` pool helpers for Postgres connections. Requires the `database` feature.
+- `redis`: namespaced Redis get/set/delete operations. Requires the `keystore` feature.
+- `http`: async REST wrapper around `reqwest::Client`. Enabled by default through the `http` feature.
 - `errors`: shared error enums used by all modules.
 
 ## Quickstart
+
+Enable the `database` feature before using the Postgres helpers:
+
+```toml
+[dependencies]
+network = { path = ".", default-features = false, features = ["database"] }
+```
 
 ### Postgres pool
 
@@ -45,6 +60,13 @@ use network::database::DatabasePool;
 fn create_pool() -> Result<DatabasePool, network::errors::NetworkError> {
 	DatabasePool::new("postgres://user:password@localhost/app", 10)
 }
+```
+
+Enable the `keystore` feature before using Redis helpers:
+
+```toml
+[dependencies]
+network = { path = ".", default-features = false, features = ["keystore"] }
 ```
 
 ### Redis client
@@ -85,7 +107,8 @@ async fn create_item() -> Result<(), network::errors::NetworkError> {
 ## Error handling
 
 All operations return `Result<_, network::errors::NetworkError>`. The top-level error enum groups
-database, Redis, transport, and input-validation failures.
+input-validation failures plus feature-specific database, Redis, and transport failures when those
+integrations are enabled.
 
 ## Development commands
 

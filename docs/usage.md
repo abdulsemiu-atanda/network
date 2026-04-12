@@ -1,5 +1,12 @@
 # Usage Guide
 
+Enable the `database` feature before using the database module:
+
+```toml
+[dependencies]
+network = { path = ".", default-features = false, features = ["database"] }
+```
+
 ## Database pool
 
 ```rust
@@ -14,6 +21,13 @@ fn checkout_connection(pool: &DatabasePool) -> Result<(), NetworkError> {
   let _connection = pool.connection()?;
   Ok(())
 }
+```
+
+Enable the `keystore` feature before using Redis helpers:
+
+```toml
+[dependencies]
+network = { path = ".", default-features = false, features = ["keystore"] }
 ```
 
 ## Redis operations
@@ -35,6 +49,13 @@ fn cache_value(connection: redis::Connection) -> Result<(), NetworkError> {
 ```
 
 ## HTTP requests
+
+The `http` feature is enabled by default. If you disable default features, re-enable it explicitly:
+
+```toml
+[dependencies]
+network = { path = ".", default-features = false, features = ["http"] }
+```
 
 ```rust
 use network::errors::NetworkError;
