@@ -10,7 +10,10 @@
 //! Most public functions return `Result<_, errors::NetworkError>` so callers can
 //! use a single error type when composing functionality across modules.
 
+#[cfg(feature = "database")]
 pub mod database;
 pub mod errors;
+#[cfg(feature = "http")]
 pub mod http;
+#[cfg(feature = "keystore")]
 pub mod redis;

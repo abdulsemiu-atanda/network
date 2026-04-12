@@ -72,8 +72,11 @@ use network::errors::NetworkError;
 fn map_error(error: NetworkError) -> &'static str {
   match error {
     NetworkError::InvalidInput(_) => "bad request",
+    #[cfg(feature = "database")]
     NetworkError::Database(_) => "database failure",
+    #[cfg(feature = "keystore")]
     NetworkError::Redis(_) => "cache failure",
+    #[cfg(feature = "http")]
     NetworkError::Transport(_) => "http transport failure",
     _ => "unknown failure",
   }
