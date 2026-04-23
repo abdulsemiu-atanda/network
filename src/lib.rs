@@ -17,3 +17,5 @@ pub mod errors;
 pub mod http;
 #[cfg(feature = "keystore")]
 pub mod redis;
+#[cfg(feature = "spec")]
+pub mod spec_helpers;

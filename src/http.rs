@@ -234,10 +234,7 @@ mod tests {
   async fn get_sends_optional_headers() {
     let server = MockServer::start();
     let get_mock = server.mock(|when, then| {
-      when
-        .method(GET)
-        .path("/v1/items")
-        .header("x-api-key", "test-key");
+      when.method(GET).path("/v1/items").header("x-api-key", "test-key");
       then.status(200);
     });
 
@@ -261,10 +258,7 @@ mod tests {
   async fn delete_calls_delete_endpoint() {
     let server = MockServer::start();
     let delete_mock = server.mock(|when, then| {
-      when
-        .method(DELETE)
-        .path("/v1/items/3")
-        .header("x-request-id", "req-3");
+      when.method(DELETE).path("/v1/items/3").header("x-request-id", "req-3");
       then.status(204);
     });
 
