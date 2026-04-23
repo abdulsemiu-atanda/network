@@ -14,7 +14,8 @@ Each module is intentionally small and focused. The crate does not attempt to be
 
 - `database`: Creates and owns Diesel `r2d2` pools. It exposes helper constructors and pooled connection retrieval.
 - `redis`: Wraps a Redis connection with namespaced key operations (`retrieve`, `insert`, `delete`).
-- `http`: Wraps `reqwest::Client` and provides method-specific helpers (`get`, `post`, `patch`, `put`).
+- `http`: Wraps `reqwest::Client` and provides method-specific helpers (`get`, `post`, `patch`, `put`, `delete`).
+- `spec_helpers`: Builds database pools for tests/specs and configures connections to begin a Diesel test transaction when acquired.
 - `errors`: Defines crate-wide error enums and conversion paths.
 
 ## Dependency rationale

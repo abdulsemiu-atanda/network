@@ -23,6 +23,29 @@ fn checkout_connection(pool: &DatabasePool) -> Result<(), NetworkError> {
 }
 ```
 
+If you need custom `r2d2` builder settings, use `DatabasePool::from_builder` with a caller-provided builder.
+
+Enable the `spec` feature before using transactional database test helpers:
+
+```toml
+[dependencies]
+network = { path = ".", default-features = false, features = ["spec"] }
+```
+
+## Spec helpers
+
+```rust
+use network::database::DatabasePool;
+use network::errors::NetworkError;
+use network::spec_helpers::test_database_pool;
+
+fn create_test_pool() -> Result<DatabasePool, NetworkError> {
+  test_database_pool("postgres://user:password@localhost/app_test", 4)
+}
+```
+
+`test_database_pool` creates a Diesel pool whose checked out connections begin a test transaction on acquire. This is useful for integration or spec-style tests that should isolate database writes per test.
+
 Enable the `keystore` feature before using Redis helpers:
 
 ```toml
@@ -48,6 +71,8 @@ fn cache_value(connection: redis::Connection) -> Result<(), NetworkError> {
 }
 ```
 
+When `expiry` is `None`, Redis inserts default to a 600-second TTL.
+
 ## HTTP requests
 
 The `http` feature is enabled by default. If you disable default features, re-enable it explicitly:
@@ -70,7 +95,7 @@ struct CreateItem {
 async fn call_api() -> Result<(), NetworkError> {
   let client = RestClient::new(
     "https://api.example.com".to_string(),
-    "network-client/0.1".to_string(),
+    "network/0.1".to_string(),
   );
 
   let _create = client

@@ -1,8 +1,15 @@
+//! Test-oriented helpers for database-backed specs and integration tests.
+//!
+//! Enable this module with the `spec` feature. The provided pool builder installs
+//! a connection customizer that starts a Diesel test transaction whenever a
+//! connection is acquired from the pool.
+
 use diesel::r2d2::{CustomizeConnection, Pool, R2D2Connection as Connection};
 use log::error;
 
 use super::{database::DatabasePool, errors::NetworkError};
 
+/// Connection customizer that starts a Diesel test transaction on checkout.
 #[derive(Debug)]
 struct TestConnectionCustomizer;
 
@@ -19,6 +26,11 @@ where
   }
 }
 
+/// Builds a Postgres pool configured for transactional tests.
+///
+/// Each acquired connection attempts to begin a Diesel test transaction during
+/// pool checkout. This keeps writes isolated for spec or integration test runs
+/// that share a test database.
 pub fn test_database_pool(url: &str, max_size: u32) -> Result<DatabasePool, NetworkError> {
   let builder = Pool::builder()
     .max_size(max_size)

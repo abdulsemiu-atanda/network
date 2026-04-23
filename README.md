@@ -27,6 +27,7 @@ Available features:
 - `http`: enables the `http` module and transport error conversions.
 - `database`: enables the `database` module and Diesel-backed database errors.
 - `keystore`: enables the `redis` module and Redis-backed cache errors.
+- `spec`: enables the `spec_helpers` module for transactional database test setup. This feature also enables `database`.
 
 The default feature set enables only `http`.
 
@@ -41,6 +42,7 @@ The default feature set enables only `http`.
 - `database`: Diesel `r2d2` pool helpers for Postgres connections. Requires the `database` feature.
 - `redis`: namespaced Redis get/set/delete operations. Requires the `keystore` feature.
 - `http`: async REST wrapper around `reqwest::Client`. Enabled by default through the `http` feature.
+- `spec_helpers`: test-oriented database helpers that create pools whose checked out connections begin a test transaction automatically. Requires the `spec` feature.
 - `errors`: shared error enums used by all modules.
 
 ## Quickstart
@@ -61,6 +63,25 @@ fn create_pool() -> Result<DatabasePool, network::errors::NetworkError> {
 	DatabasePool::new("postgres://user:password@localhost/app", 10)
 }
 ```
+
+Enable the `spec` feature before using transactional database test helpers:
+
+```toml
+[dependencies]
+network = { path = ".", default-features = false, features = ["spec"] }
+```
+
+### Spec helpers
+
+```rust
+use network::spec_helpers::test_database_pool;
+
+fn create_test_pool() -> Result<network::database::DatabasePool, network::errors::NetworkError> {
+	test_database_pool("postgres://user:password@localhost/app_test", 4)
+}
+```
+
+Each acquired connection begins a Diesel test transaction automatically, so database state can be isolated per test.
 
 Enable the `keystore` feature before using Redis helpers:
 
