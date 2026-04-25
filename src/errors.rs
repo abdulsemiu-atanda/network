@@ -118,6 +118,8 @@ pub enum NetworkError {
   InvalidInput(&'static str),
 }
 
+pub use reqwest::Error as HttpError;
+
 #[cfg(feature = "database")]
 impl From<DatabaseError> for NetworkError {
   fn from(value: DatabaseError) -> Self {
