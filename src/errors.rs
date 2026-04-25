@@ -159,3 +159,16 @@ impl From<reqwest::Error> for NetworkError {
     Self::Transport(value)
   }
 }
+
+impl std::fmt::Display for NetworkError {
+  fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    match self {
+      Self::Transport(error) => write!(f, "{error}"),
+      Self::InvalidInput(error) => write!(f, "{error}"),
+      #[cfg(feature = "database")]
+      Self::Database(error) => write!(f, "{error}"),
+      #[cfg(feature = "keystore")]
+      Self::Redis(error) => write!(f, "{error}"),
+    }
+  }
+}
