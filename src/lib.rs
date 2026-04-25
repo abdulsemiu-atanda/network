@@ -23,7 +23,7 @@ pub mod database;
 pub mod errors;
 #[cfg(feature = "http")]
 pub mod http;
-pub use reqwest::header;
+pub use reqwest::{Error as ReqwestError, header};
 #[cfg(feature = "keystore")]
 pub mod redis;
 #[cfg(feature = "spec")]
